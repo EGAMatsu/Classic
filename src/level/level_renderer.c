@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 #include <GL/glu.h>
-#include <GLFW/glfw3.h>
+#include <GL/glfw.h>
 #include <stdlib.h>
 
 #include "level_renderer.h"

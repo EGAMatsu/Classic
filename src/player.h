@@ -5,7 +5,7 @@
 
 #include "common.h"
 #include "entity.h"
-#include <GLFW/glfw3.h>
+#include <GL/glfw.h>
 
 typedef struct Player {
     Entity e;
@@ -13,7 +13,7 @@ typedef struct Player {
 
 void Player_init(Player* player, Level* level);
 
-void Player_onTick(Player* player, GLFWwindow* window);
-void Player_turn(Player* player, GLFWwindow* window, float dx, float dy);
+void Player_onTick(Player* player);
+void Player_turn(Player* player, float dx, float dy);
 
 #endif  // PLAYER_H

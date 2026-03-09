@@ -1,6 +1,7 @@
 // player.c — player base
 
 #include "player.h"
+#include <GL/glfw.h>
 #include <math.h>
 
 void Player_init(Player* p, Level* level) {
@@ -8,29 +9,30 @@ void Player_init(Player* p, Level* level) {
     p->e.heightOffset = 1.62f;
 }
 
-void Player_turn(Player* p, GLFWwindow* window, float dx, float dy) {
+void Player_turn(Player* p, float dx, float dy) {
+    // Entity_turn handles the rotation math
     Entity_turn(&p->e, dx, dy);
-    // consume mouse deltas by resetting cursor to the origin each frame
-    glfwSetCursorPos(window, 0, 0);
 }
 
-void Player_onTick(Player* p, GLFWwindow* window) {
+void Player_onTick(Player* p) {
     Entity_onTick(&p->e);
 
     float forward = 0.0f, strafe = 0.0f;
 
-    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+    if (glfwGetKey('R') == GLFW_PRESS) {
         Entity_resetPosition(&p->e);
     }
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP)    == GLFW_PRESS) forward -= 1.0f;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN)  == GLFW_PRESS) forward += 1.0f;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT)  == GLFW_PRESS) strafe  -= 1.0f;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) strafe  += 1.0f;
 
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && p->e.onGround) {
+    if (glfwGetKey('W') == GLFW_PRESS || glfwGetKey(GLFW_KEY_UP)    == GLFW_PRESS) forward -= 1.0f;
+    if (glfwGetKey('S') == GLFW_PRESS || glfwGetKey(GLFW_KEY_DOWN)  == GLFW_PRESS) forward += 1.0f;
+    if (glfwGetKey('A') == GLFW_PRESS || glfwGetKey(GLFW_KEY_LEFT)  == GLFW_PRESS) strafe  -= 1.0f;
+    if (glfwGetKey('D') == GLFW_PRESS || glfwGetKey(GLFW_KEY_RIGHT) == GLFW_PRESS) strafe  += 1.0f;
+
+    if (glfwGetKey(GLFW_KEY_SPACE) == GLFW_PRESS && p->e.onGround) {
         p->e.motionY = 0.5f;
     }
 
+    // Movement physics
     Entity_moveRelative(&p->e, strafe, forward, p->e.onGround ? 0.1f : 0.02f);
 
     p->e.motionY -= 0.08f; // gravity
