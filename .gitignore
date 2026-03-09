@@ -53,6 +53,7 @@ dkms.conf
 
 # VS Codium stuff
 .vscode/
+nul
 
 # Output files
 rubydung
