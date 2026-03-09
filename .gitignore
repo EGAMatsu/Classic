@@ -57,6 +57,7 @@ nul
 
 # Output files
 rubydung
+minecraft
 *.dat
 save/*.dat
 
