@@ -30,9 +30,9 @@ void Particle_init(Particle* p, Level* level,
                     p->base.motionY*p->base.motionY +
                     p->base.motionZ*p->base.motionZ);
     if (d > 0.0) {
-        p->base.motionX = p->base.motionX / d * speed * 0.7;
-        p->base.motionY = p->base.motionY / d * speed;
-        p->base.motionZ = p->base.motionZ / d * speed * 0.7;
+        p->base.motionX = p->base.motionX / d * speed * 0.4;
+        p->base.motionY = p->base.motionY / d * speed * 0.4 + 0.1;
+        p->base.motionZ = p->base.motionZ / d * speed * 0.4;
     }
 
     p->textureUOffset = frand01() * 3.0f;
@@ -52,7 +52,7 @@ void Particle_onTick(Particle* p) {
     }
 
     // gravity
-    p->base.motionY -= 0.06;
+    p->base.motionY -= 0.04;
 
     // move
     Entity_move(&p->base, p->base.motionX, p->base.motionY, p->base.motionZ);

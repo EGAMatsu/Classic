@@ -2,8 +2,7 @@
 
 #include "chunk.h"
 #include "tile/tile.h"
-#include "tessellator.h"
-#include "../textures.h"
+#include "../renderer/textures.h"
 #include "../timer.h"
 #include "../player.h"
 #include <math.h>

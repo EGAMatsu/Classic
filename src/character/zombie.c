@@ -1,7 +1,7 @@
 // character/zombie.c
 
 #include "zombie.h"
-#include "../textures.h"
+#include "../renderer/textures.h"
 #include "../timer.h"
 #include <GL/glew.h>
 #include <math.h>

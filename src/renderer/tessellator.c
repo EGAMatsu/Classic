@@ -41,8 +41,13 @@ void Tessellator_vertexUV(Tessellator* t, float x, float y, float z, float u, fl
 }
 
 void Tessellator_color(Tessellator* t, float r, float g, float b) {
+    if (t->ignoreColor) return;
     t->hasColor = 1;
     t->r = r; t->g = g; t->b = b;
+}
+
+void Tessellator_setIgnoreColor(Tessellator* t, int ignore) {
+    t->ignoreColor = ignore ? 1 : 0;
 }
 
 void Tessellator_flush(Tessellator* t) {

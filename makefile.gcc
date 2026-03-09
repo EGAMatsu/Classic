@@ -9,16 +9,17 @@ BUILD ?= debug
 
 # Sources / Objects
 SRCDIR := src
-SRC    := $(SRCDIR)/rubydung.c $(SRCDIR)/player.c $(SRCDIR)/textures.c \
+SRC    := $(SRCDIR)/minecraft.c $(SRCDIR)/player.c $(SRCDIR)/renderer/textures.c \
           $(SRCDIR)/timer.c $(SRCDIR)/hitresult.c \
           $(SRCDIR)/level/chunk.c $(SRCDIR)/level/level.c \
-          $(SRCDIR)/level/levelrenderer.c $(SRCDIR)/level/tessellator.c \
-          $(SRCDIR)/level/tile/tile.c $(SRCDIR)/level/frustum.c \
+          $(SRCDIR)/level/level_renderer.c $(SRCDIR)/renderer/tessellator.c \
+          $(SRCDIR)/level/tile/tile.c $(SRCDIR)/renderer/frustum.c \
           $(SRCDIR)/phys/aabb.c $(SRCDIR)/entity.c \
           $(SRCDIR)/character/zombie.c $(SRCDIR)/character/polygon.c \
           $(SRCDIR)/character/cube.c $(SRCDIR)/level/perlin.c \
-          $(SRCDIR)/particle/particleengine.c $(SRCDIR)/particle/particle.c \
-          $(SRCDIR)/character/zombiemodel.c
+          $(SRCDIR)/particle/particle_engine.c $(SRCDIR)/particle/particle.c \
+          $(SRCDIR)/character/zombie_model.c \
+          $(SRCDIR)/gui/font.c
 # TODO: Make this automatic.
 
 OBJ := $(SRC:.c=.o)
@@ -40,17 +41,17 @@ endif
 
 # Linker flags / output name per-OS
 ifeq ($(UNAME_S),Linux)
-    EXE     := rubydung
+    EXE     := minecraft
     LDFLAGS := -Wl,-Bstatic -lglfw3 -lGLEW -lGLU -lz -Wl,-Bdynamic -lGL -lm -lpthread -ldl -lX11
 endif
 
 ifeq ($(UNAME_S),Darwin)
-    EXE     := rubydung
+    EXE     := minecraft
     LDFLAGS := -lglfw -lGLEW -framework OpenGL -lz
 endif
 
 ifeq ($(OS),Windows_NT)
-    EXE := rubydung.exe
+    EXE := minecraft.exe
     STATIC_FLAGS := -static -static-libgcc -static-libstdc++
     ifeq ($(BUILD),release)
         LDFLAGS := $(STATIC_FLAGS) -lglew32 -lglfw3 -lopengl32 -lglu32 -lz -lgdi32 -lwinmm -mwindows

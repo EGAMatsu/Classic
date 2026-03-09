@@ -1,9 +1,9 @@
-// particle/particleengine.c
+// particle/particle_engine.c
 
-#include "particleengine.h"
+#include "particle_engine.h"
 #include <stdlib.h>
 #include <math.h>
-#include "../textures.h"
+#include "../renderer/textures.h"
 #include "../player.h"
 
 static void ensure_capacity(ParticleEngine* pe, int need) {

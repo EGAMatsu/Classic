@@ -33,7 +33,7 @@ void Entity_setPosition(Entity* e, double x, double y, double z) {
 
 void Entity_resetPosition(Entity* e) {
     const float x = (float)rand() / (float)RAND_MAX * e->level->width;
-    const float y = (float)e->level->depth + 3.0f;
+    const float y = (float)e->level->depth + 10.0f;
     const float z = (float)rand() / (float)RAND_MAX * e->level->height;
     Entity_setPosition(e, x, y, z);
 }

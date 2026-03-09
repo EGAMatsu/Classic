@@ -5,7 +5,7 @@
 
 #include "../entity.h"
 #include "../level/level.h"
-#include "../level/tessellator.h"
+#include "../renderer/tessellator.h"
 
 typedef struct {
     Entity base;

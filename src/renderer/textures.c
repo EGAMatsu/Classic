@@ -5,22 +5,17 @@
 #include "stb_image.h"
 
 int loadTexture(const char* path, int filterMode) {
-    (void) filterMode;
-
     GLuint tex = 0;
     glGenTextures(1, &tex);
     if (!tex) { fprintf(stderr, "Failed to generate texture id\n"); return 0; }
 
     bind((int)tex);
 
-    // --- WRAP
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    // --- FILTERS
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterMode);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterMode);
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -31,12 +26,12 @@ int loadTexture(const char* path, int filterMode) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, img);
 
-
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free(img);
     return (int)tex;
 }
+
 void bind(int id) {
     glBindTexture(GL_TEXTURE_2D, (GLuint)id);
 }

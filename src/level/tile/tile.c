@@ -1,7 +1,7 @@
 // level/tile/tile.c — registry, per-face textures, render helpers
 
 #include "tile.h"
-#include "../../particle/particleengine.h"
+#include "../../particle/particle_engine.h"
 #include "../../particle/particle.h"
 #include <string.h>
 
@@ -209,6 +209,14 @@ static void Bush_render(const Tile* self, Tessellator* t, const Level* lvl,
     Tessellator_vertexUV(t, X0, Y1, Z1, u1, v0);
 }
 
+static void Bush_onTick(const Tile* self, Level* lvl, int x, int y, int z) {
+    (void)self;
+    int below = Level_getTile(lvl, x, y-1, z);
+    if (!Level_isLit(lvl, x, y, z) || (below != TILE_DIRT.id && below != TILE_GRASS.id)) {
+        level_setTile(lvl, x, y, z, 0);
+    }
+}
+
 void Tile_registerAll(void) {
     memset((void*)gTiles, 0, sizeof(gTiles));
     registerTile(&TILE_ROCK,       1,  1,  NULL);
@@ -218,12 +226,13 @@ void Tile_registerAll(void) {
     registerTile(&TILE_WOOD,       5,  4,  NULL);
     registerTile(&TILE_BUSH,       6, 15,  NULL);
 
-    TILE_GRASS.onTick = Grass_onTick;
+    TILE_GRASS.onTick     = Grass_onTick;
 
     TILE_BUSH.isSolid     = Bush_isSolid;
     TILE_BUSH.blocksLight = Bush_blocksLight;
     TILE_BUSH.getAABB     = Bush_getAABB;
     TILE_BUSH.render      = Bush_render;
+    TILE_BUSH.onTick      = Bush_onTick;
 }
 
 /* ---------- untextured single-face helper (for hit highlight) ---------- */

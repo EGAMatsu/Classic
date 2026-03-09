@@ -4,7 +4,7 @@
 #define TILE_H
 
 #include "../level.h"
-#include "..//tessellator.h"
+#include "../../renderer/tessellator.h"
 
 struct ParticleEngine; typedef struct ParticleEngine ParticleEngine;
 

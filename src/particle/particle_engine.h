@@ -1,4 +1,4 @@
-// particle/particleengine.h
+// particle/particle_engine.h
 
 #ifndef PARTICLE_ENGINE_H
 #define PARTICLE_ENGINE_H
@@ -9,7 +9,7 @@ struct Level;   typedef struct Level Level;
 struct Player;  typedef struct Player Player;
 
 #include "particle.h"
-#include "../level/tessellator.h"
+#include "../renderer/tessellator.h"
 
 typedef struct ParticleEngine {
     Level* level;

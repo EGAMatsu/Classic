@@ -5,7 +5,7 @@
 
 #include <stdbool.h>
 #include "level.h"
-#include "tessellator.h"
+#include "../renderer/tessellator.h"
 #include "../phys/aabb.h"
 
 struct Level; typedef struct Level Level;

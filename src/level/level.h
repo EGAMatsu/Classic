@@ -20,6 +20,7 @@ typedef struct Level {
     byte* blocks;
     int*  lightDepths;
     LevelRenderer* renderer;  // backref used for dirty notifications
+    int unprocessed;
 } Level;
 
 typedef struct {
