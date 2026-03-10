@@ -29,7 +29,7 @@ DEP := $(OBJ:.o=.d)
 UNAME_S := $(shell uname -s)
 
 # Common flags
-CFLAGS   := $(CSTD) $(WARN) $(INCLUDE) -DGLEW_STATIC
+CFLAGS   := $(CSTD) $(WARN) $(INCLUDE) -DGLEW_STATIC -DGLFW_GLEW
 DEPFLAGS := -MMD -MP
 
 # Per-build-type flags

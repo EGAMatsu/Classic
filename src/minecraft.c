@@ -6,10 +6,6 @@
 #include <math.h>
 #include <float.h>
 
-#include <GL/glew.h>
-#include <GL/glu.h>
-#include <GL/glfw.h>
-
 #include "common.h"
 
 #include "level/level.h"
@@ -80,16 +76,16 @@ static int init(Level *lvl, LevelRenderer *lr, Player *p) {
     /* Game initialization */
     Tile_registerAll();
 
-    texTerrain = loadTexture("resources/terrain.png", GL_NEAREST);
+    texTerrain = loadTexture("resources/terrain.png");
     Font_init(&gFont, "resources/default.gif");
 
     Level_init(lvl, 256, 256, 64);
-    LevelRenderer_init(lr, lvl, (GLuint)texTerrain);
+    LevelRenderer_init(lr, lvl, (unsigned int)texTerrain);
     calcLightDepths(lvl, 0, 0, lvl->width, lvl->height);
 
     Player_init(p, lvl);
 
-    ParticleEngine_init(&particleEngine, lvl, (GLuint)texTerrain);
+    ParticleEngine_init(&particleEngine, lvl, (unsigned int)texTerrain);
 
     mobCount = 0;
     for (int i = 0; i < 10 && i < MAX_MOBS; ++i) {
@@ -106,63 +102,54 @@ static int init(Level *lvl, LevelRenderer *lr, Player *p) {
 static void destroy(Level* lvl) {
     Level_save(lvl);
     Level_destroy(lvl);
-    glfwTerminate();
+    shutdownWindow();
 }
 
 /* --- camera ------------------------------------------------------------------ */
 
 static void moveCameraToPlayer(Player* p, float t) {
-    glTranslatef(0.0f, 0.0f, -0.3f); // eye offset
+    setModel_positionOffset(0.0f, 0.0f, -0.3f); // eye offset
 
-    glRotatef(p->e.xRotation, 1.0f, 0.0f, 0.0f);
-    glRotatef(p->e.yRotation, 0.0f, 1.0f, 0.0f);
+    setModel_rotation(p->e.xRotation, 0, 0);
+    setModel_rotation(0,            p->e.yRotation, 0);
 
     double x = p->e.prevX + (p->e.x - p->e.prevX) * (double)t;
     double y = p->e.prevY + (p->e.y - p->e.prevY) * (double)t;
     double z = p->e.prevZ + (p->e.z - p->e.prevZ) * (double)t;
 
-    glTranslated(-x, -y, -z);
+    setModel_positionOffset(-x, -y, -z);
 }
 
 static void setupCamera(Player* p, float t) {
-    int fbw, fbh; glfwGetWindowSize(&fbw, &fbh);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(70.0, (double)fbw / (double)fbh, 0.05, 1000.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    setupPerspective();
     moveCameraToPlayer(p, t);
 }
 
 static void drawGui(float partialTicks) {
     (void)partialTicks;
 
-    glClear(GL_DEPTH_BUFFER_BIT);
+    int fbw, fbh;
+    getWindowSize(&fbw, &fbh);
+    const int baseH = 240;
 
-    int fbw, fbh; 
-    glfwGetWindowSize(&fbw, &fbh);
+    int scale = fbh / baseH;
+    if (scale < 1) scale = 1;
 
-    int screenWidth  = fbw * 240 / fbh;  
-    int screenHeight = 240;              
+    int screenHeight = baseH;
+    int screenWidth  = fbw / scale;          
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0.0, (double)screenWidth, (double)screenHeight, 0.0, 100.0, 300.0);
+    setupGUI(screenWidth, screenHeight);
+    setModel_positionOffset(0.0f, 0.0f, -200.0f);
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0.0f, 0.0f, -200.0f);
+    startModel_Matrix();
+    setModel_positionOffset((double)screenWidth - 16.0, 16.0, 0.0);
+    setModel_scale(16.0f);
+    setModel_rotation(30.0f, 0, 0);
+    setModel_rotation(0, 45.0f, 0);
+    setModel_positionOffset(-1.5f, 0.5f, -0.5f);
+    setModel_scalePercise(-1.0f, -1.0f, 1.0f);
 
-    glPushMatrix();
-    glTranslated((double)screenWidth - 16.0, 16.0, 0.0);
-    glScalef(16.0f, 16.0f, 16.0f);
-    glRotatef(30.0f, 1, 0, 0);
-    glRotatef(45.0f, 0, 1, 0);
-    glTranslatef(-1.5f, 0.5f, -0.5f);
-    glScalef(-1.0f, -1.0f, 1.0f);
-
-    glBindTexture(GL_TEXTURE_2D, texTerrain);
-    glEnable(GL_TEXTURE_2D);
+    setTexture(texTerrain);
 
     Tessellator_init(&hudTess);
     const Tile* hand = gTiles[selectedTileId];
@@ -171,8 +158,7 @@ static void drawGui(float partialTicks) {
     }
     Tessellator_flush(&hudTess);
 
-    glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
+    endModel_Matrix();
 
     Font_drawShadow(&gFont, &hudTess, "0.0.11a", 2, 2, 0xFFFFFF);
 
@@ -183,7 +169,7 @@ static void drawGui(float partialTicks) {
     int cx = screenWidth / 2;
     int cy = screenHeight / 2;
 
-    glColor4f(1, 1, 1, 1);
+    setModel_color(1, 1, 1, 1);
     Tessellator_init(&hudTess);
     Tessellator_vertex(&hudTess, (float)(cx + 1), (float)(cy - 4), 0.0f);
     Tessellator_vertex(&hudTess, (float)(cx + 0), (float)(cy - 4), 0.0f);
@@ -295,17 +281,17 @@ static void pick(float t) {
 /* --- input actions ----------------------------------------------------------- */
 
 static void handleGameplayKeys() {
-    int enter = glfwGetKey(GLFW_KEY_ENTER);
+    int enter = getKey(GLFW_KEY_ENTER);
     if (enter == 1 && prevEnter == 0) {
         Level_save(&level);
     }
     prevEnter = enter;
 
-    int n1 = glfwGetKey('1');
-    int n2 = glfwGetKey('2');
-    int n3 = glfwGetKey('3');
-    int n4 = glfwGetKey('4');
-    int n6 = glfwGetKey('6');
+    int n1 = getKey('1');
+    int n2 = getKey('2');
+    int n3 = getKey('3');
+    int n4 = getKey('4');
+    int n6 = getKey('6');
     if (n1 == 1 && prevNum1 == 0) selectedTileId = 1; 
     if (n2 == 1 && prevNum2 == 0) selectedTileId = 3; 
     if (n3 == 1 && prevNum3 == 0) selectedTileId = 4; 
@@ -313,13 +299,13 @@ static void handleGameplayKeys() {
     if (n6 == 1 && prevNum6 == 0) selectedTileId = 6; 
     prevNum1 = n1; prevNum2 = n2; prevNum3 = n3; prevNum4 = n4; prevNum6 = n6;
 
-    int g = glfwGetKey('G');
+    int g = getKey('G');
     if (g == 1 && prevG == 0 && mobCount < MAX_MOBS) {
         Zombie_init(&mobs[mobCount++], &level, player.e.x, player.e.y, player.e.z);
     }
     prevG = g;
 
-    int kY = glfwGetKey('Y');
+    int kY = getKey('Y');
     if (kY == 1 && prevY == 0) {
         gYMouseAxis *= -1;
     }
@@ -397,14 +383,14 @@ static void handleBlockClicks() {
 static void render(Level* lvl, LevelRenderer* lr, Player* p, float t) {
     (void)lvl;
     int fbw, fbh;
-    startOfFrame();
+    startOfFrame(&fbw, &fbh);
 
     int grabbed = isActive();
     if (grabbed && isMouseLocked) {
         int mx, my;
-        glfwGetMousePos(&mx, &my);
+        getMouse_xy(&mx, &my);
 
-        int ww, wh; glfwGetWindowSize(&ww, &wh);
+        int ww, wh; getWindowSize(&ww, &wh);
         int cx = ww / 2, cy = wh / 2;
 
         float dx = (float)(mx - cx);
@@ -413,10 +399,8 @@ static void render(Level* lvl, LevelRenderer* lr, Player* p, float t) {
         dy = -dy * (float)gYMouseAxis;
 
         Player_turn(p, dx, dy);
-        glfwSetMousePos(cx, cy);
+        setMouse_xy(cx, cy);
     }
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     setupCamera(p, t);
 
@@ -444,20 +428,8 @@ static void render(Level* lvl, LevelRenderer* lr, Player* p, float t) {
 
     ParticleEngine_render(&particleEngine, p, t, 1);
 
-    glDisable(GL_LIGHTING);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_FOG);
-
-    if (!isHitNull) {
-        GLboolean wasAlpha = glIsEnabled(GL_ALPHA_TEST);
-        if (wasAlpha) glDisable(GL_ALPHA_TEST);
-        LevelRenderer_renderHit(lr, &hitResult, gEditMode, selectedTileId);
-        if (wasAlpha) glEnable(GL_ALPHA_TEST);
-    }
-
+    endOfFrame(lr, &hitResult, isHitNull, gEditMode, selectedTileId);
     drawGui(t);
-
-    glfwSwapBuffers();
 }
 
 /* --- main loop --------------------------------------------------------------- */

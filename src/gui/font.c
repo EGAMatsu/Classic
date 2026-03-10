@@ -65,7 +65,7 @@ void Font_init(Font* f, const char* path) {
         f->charWidth[i] = x;
     }
 
-    f->texture = loadTexture(path, GL_NEAREST);
+    f->texture = loadTexture(path);
 
     stbi_image_free(img);
 }

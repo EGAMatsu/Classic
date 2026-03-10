@@ -4,7 +4,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-int loadTexture(const char* path, int filterMode) {
+const int filterMode = GL_NEAREST;
+int loadTexture(const char* path) {
     GLuint tex = 0;
     glGenTextures(1, &tex);
     if (!tex) { fprintf(stderr, "Failed to generate texture id\n"); return 0; }

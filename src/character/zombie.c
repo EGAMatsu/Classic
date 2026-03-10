@@ -20,7 +20,7 @@ void Zombie_init(Zombie* z, Level* level, double x, double y, double zpos) {
     z->timeOffset = (float)(((double)rand() / RAND_MAX) * 1239813.0);
     z->speed = 1.0f;
 
-    if (!texChar) texChar = loadTexture("resources/char.png", GL_NEAREST);
+    if (!texChar) texChar = loadTexture("resources/char.png");
 }
 
 void Zombie_onTick(Zombie* z) {

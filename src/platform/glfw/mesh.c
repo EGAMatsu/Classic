@@ -2,6 +2,7 @@
 #include <math.h>
 #include <string.h>
 #include "../../renderer/tessellator.h"
+#include "../../renderer/textures.h"
 #include "../../character/polygon.h"
 #include "../../character/cube.h"
 #include "../../common.h"
@@ -61,12 +62,23 @@ void startModel_Matrix() {
     glPushMatrix();
     glEnable(GL_TEXTURE_2D);
 }
+void setTexture(int texture) {
+    bind(texture);
+}
 void   endModel_Matrix() {
     glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 }
 
 /* Model position */
+void setModel_color(float r, float g, float b, float a) {
+    if (a != -1) {
+        glColor4f(r,g,b,a);
+    } else {
+        glColor3f(r,g,b);
+    }
+}
+
 void setModel_position(double ix, double iy, double iz) {
     glTranslated(ix, iy, iz);
     glScalef(1.f, -1.f, 1.f);
@@ -79,6 +91,10 @@ void setModel_positionOffset(double ix, double iy, double iz) {
 /* Model Scale */
 void setModel_scale(float scale) {
     glScalef(scale, scale, scale);
+}
+
+void setModel_scalePercise(float sx, float sy, float sz) {
+    glScalef(sx, sy, sz);
 }
 
 /* Model Rotation */
