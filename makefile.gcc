@@ -18,7 +18,8 @@ SRC := \
     $(wildcard src/character/*.c)   \
     $(wildcard src/particle/*.c)    \
     $(wildcard src/gui/*.c)         \
-    $(wildcard src/phys/*.c)
+    $(wildcard src/phys/*.c)        \
+    $(wildcard src/platform/glfw/*.c)        \
 # TODO: Make this automatic.
 
 OBJ := $(SRC:.c=.o)

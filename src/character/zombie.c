@@ -5,6 +5,7 @@
 #include "../timer.h"
 #include <GL/glew.h>
 #include <math.h>
+#include "../dsp_renderer.h"
 
 static int texChar = 0;
 
@@ -54,8 +55,7 @@ void Zombie_onTick(Zombie* z) {
 }
 
 void Zombie_render(const Zombie* z, float partialTicks) {
-    glPushMatrix();
-    glEnable(GL_TEXTURE_2D);
+    startModel_Matrix();
     bind(texChar);
 
     const double t  = (double)getCurrentTimeInNanoseconds() * 1e-9 * 10.0 * z->speed + z->timeOffset;
@@ -63,19 +63,18 @@ void Zombie_render(const Zombie* z, float partialTicks) {
     const double iy = z->base.prevY + (z->base.y - z->base.prevY) * partialTicks;
     const double iz = z->base.prevZ + (z->base.z - z->base.prevZ) * partialTicks;
 
-    glTranslated(ix, iy, iz);
-    glScalef(1.f, -1.f, 1.f);
+    setModel_position(ix, iy, iz);
 
     const float size = 7.0f / 120.0f;
-    glScalef(size, size, size);
+    setModel_scale(size);
 
     const double offY = fabs(sin(t * 2.0 / 3.0)) * 5.0 + 23.0;
-    glTranslated(0.0, -offY, 0.0);
-    glRotated(z->rotation * 180.0 / M_PI + 180.0, 0, 1, 0);
+    setModel_positionOffset(0.0, -offY, 0.0);
+    /*glRotated(z->rotation * 180.0 / M_PI + 180.0, 0, 1, 0);*/
+    setModel_rotation(0, z->rotation * 180.0 / M_PI + 180.0, 0);
 
     // Render the extracted model
     ZombieModel_render(&z->model, t);
 
-    glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
+    endModel_Matrix();
 }

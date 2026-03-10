@@ -10,15 +10,3 @@ void Polygon_init_uv(Polygon* p, Vertex a, Vertex b, Vertex c, Vertex d,
     p->v[2] = Vertex_remap(c, minU, maxV);
     p->v[3] = Vertex_remap(d, maxU, maxV);
 }
-
-void Polygon_render(const Polygon* p) {
-    glColor3f(1.f, 1.f, 1.f);
-
-    const float uDiv = 63.999f;
-    const float vDiv = 31.999f;
-
-    glTexCoord2f(p->v[3].u / uDiv, p->v[3].v / vDiv); glVertex3f(p->v[3].pos.x, p->v[3].pos.y, p->v[3].pos.z);
-    glTexCoord2f(p->v[2].u / uDiv, p->v[2].v / vDiv); glVertex3f(p->v[2].pos.x, p->v[2].pos.y, p->v[2].pos.z);
-    glTexCoord2f(p->v[1].u / uDiv, p->v[1].v / vDiv); glVertex3f(p->v[1].pos.x, p->v[1].pos.y, p->v[1].pos.z);
-    glTexCoord2f(p->v[0].u / uDiv, p->v[0].v / vDiv); glVertex3f(p->v[0].pos.x, p->v[0].pos.y, p->v[0].pos.z);
-}

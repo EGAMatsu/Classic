@@ -35,14 +35,14 @@ static ParticleEngine particleEngine;
 
 static int mobCount = 0;
 
-static int prevLeft  = GLFW_RELEASE;
-static int prevRight = GLFW_RELEASE;
-static int prevEnter = GLFW_RELEASE;
-static int prevNum1 = GLFW_RELEASE, prevNum2 = GLFW_RELEASE;
-static int prevNum3 = GLFW_RELEASE, prevNum4 = GLFW_RELEASE;
-static int prevNum6 = GLFW_RELEASE;
-static int prevG    = GLFW_RELEASE;
-static int prevY    = GLFW_RELEASE;
+static int prevLeft  = 0;
+static int prevRight = 0;
+static int prevEnter = 0;
+static int prevNum1 = 0, prevNum2 = 0;
+static int prevNum3 = 0, prevNum4 = 0;
+static int prevNum6 = 0;
+static int prevG    = 0;
+static int prevY    = 0;
 
 static int gEditMode = 0;              // 0=destroy, 1=place
 static int gYMouseAxis = 1;            // toggled by Y key (1 or -1)
@@ -73,7 +73,7 @@ static bool isMouseLocked = true;
 /* --- input & GL state helpers ------------------------------------------------ */
 
 static void keyCallback(int key, int action) {
-    if (action == GLFW_PRESS && key == GLFW_KEY_ESC) {
+    if (action == 1 && key == GLFW_KEY_ESC) {
         if (glfwGetWindowParam(GLFW_OPENED)) {
             int ww, wh; glfwGetWindowSize(&ww, &wh);
             glfwEnable(GLFW_MOUSE_CURSOR);
@@ -379,7 +379,7 @@ static void pick(float t) {
 
 static void handleGameplayKeys() {
     int enter = glfwGetKey(GLFW_KEY_ENTER);
-    if (enter == GLFW_PRESS && prevEnter == GLFW_RELEASE) {
+    if (enter == 1 && prevEnter == 0) {
         Level_save(&level);
     }
     prevEnter = enter;
@@ -389,21 +389,21 @@ static void handleGameplayKeys() {
     int n3 = glfwGetKey('3');
     int n4 = glfwGetKey('4');
     int n6 = glfwGetKey('6');
-    if (n1 == GLFW_PRESS && prevNum1 == GLFW_RELEASE) selectedTileId = 1; 
-    if (n2 == GLFW_PRESS && prevNum2 == GLFW_RELEASE) selectedTileId = 3; 
-    if (n3 == GLFW_PRESS && prevNum3 == GLFW_RELEASE) selectedTileId = 4; 
-    if (n4 == GLFW_PRESS && prevNum4 == GLFW_RELEASE) selectedTileId = 5; 
-    if (n6 == GLFW_PRESS && prevNum6 == GLFW_RELEASE) selectedTileId = 6; 
+    if (n1 == 1 && prevNum1 == 0) selectedTileId = 1; 
+    if (n2 == 1 && prevNum2 == 0) selectedTileId = 3; 
+    if (n3 == 1 && prevNum3 == 0) selectedTileId = 4; 
+    if (n4 == 1 && prevNum4 == 0) selectedTileId = 5; 
+    if (n6 == 1 && prevNum6 == 0) selectedTileId = 6; 
     prevNum1 = n1; prevNum2 = n2; prevNum3 = n3; prevNum4 = n4; prevNum6 = n6;
 
     int g = glfwGetKey('G');
-    if (g == GLFW_PRESS && prevG == GLFW_RELEASE && mobCount < MAX_MOBS) {
+    if (g == 1 && prevG == 0 && mobCount < MAX_MOBS) {
         Zombie_init(&mobs[mobCount++], &level, player.e.x, player.e.y, player.e.z);
     }
     prevG = g;
 
     int kY = glfwGetKey('Y');
-    if (kY == GLFW_PRESS && prevY == GLFW_RELEASE) {
+    if (kY == 1 && prevY == 0) {
         gYMouseAxis *= -1;
     }
     prevY = kY;
@@ -424,7 +424,7 @@ static void handleBlockClicks() {
     }
 
     if (glfwGetWindowParam(GLFW_OPENED) && !glfwGetWindowParam(GLFW_ACTIVE) &&
-        (left == GLFW_PRESS || right == GLFW_PRESS)) {
+        (left == 1 || right == 1)) {
         int ww, wh; glfwGetWindowSize(&ww, &wh);
         glfwDisable(GLFW_MOUSE_CURSOR);
         glfwSetMousePos(ww / 2, wh / 2);
@@ -433,12 +433,12 @@ static void handleBlockClicks() {
         return;
     }
 
-    if (right == GLFW_PRESS && prevRight == GLFW_RELEASE) {
+    if (right == 1 && prevRight == 0) {
         gEditMode = (gEditMode + 1) % 2;
     }
     prevRight = right;
 
-    if (left == GLFW_PRESS && prevLeft == GLFW_RELEASE && !isHitNull) {
+    if (left == 1 && prevLeft == 0 && !isHitNull) {
         if (gEditMode == 0) {
             int id = Level_getTile(&level, hitResult.x, hitResult.y, hitResult.z);
             const Tile* t = (id >= 0 && id < 256) ? gTiles[id] : NULL;
