@@ -281,7 +281,7 @@ static void pick(float t) {
 /* --- input actions ----------------------------------------------------------- */
 
 static void handleGameplayKeys() {
-    int enter = getKey(GLFW_KEY_ENTER);
+    int enter = getKey(buttonSave);
     if (enter == 1 && prevEnter == 0) {
         Level_save(&level);
     }
@@ -314,8 +314,8 @@ static void handleGameplayKeys() {
 
 static bool wasGrabbed = false;
 static void handleBlockClicks() {
-    int left  = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
-    int right = glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT);
+    int left  = getKey(firePrim);
+    int right = getKey(fireSec);
 
     if (!isMouseLocked && (left || right)) {
         isMouseLocked = 1;

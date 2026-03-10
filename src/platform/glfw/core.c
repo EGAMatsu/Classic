@@ -12,14 +12,14 @@ static GLfloat fogColorDaylight[4] = { 254.0f/255.0f, 251.0f/255.0f, 250.0f/255.
 static GLfloat fogColorShadow  [4] = {  14.0f/255.0f,  11.0f/255.0f,  10.0f/255.0f, 1.0f };
 
 /* Input Defaults */
-#define DEVICE_KB -1
-#define DEVICE_MOUSE -2
-#define DEVICE_CONTROLLER0 0
+#define DEVICE_KB 0
+#define DEVICE_MOUSE 4096
+#define DEVICE_CONTROLLER0 8192
 
-int8_t firePrim_dev = DEVICE_MOUSE;
-int firePrim = GLFW_MOUSE_BUTTON_LEFT;
-int8_t  fireSec_dev = DEVICE_MOUSE;
-int fireSec  = GLFW_MOUSE_BUTTON_RIGHT;
+int firePrim = GLFW_MOUSE_BUTTON_LEFT+DEVICE_MOUSE;
+int fireSec  = GLFW_MOUSE_BUTTON_RIGHT+DEVICE_MOUSE;
+int buttonSave = GLFW_KEY_ENTER;
+int buttonRespawn = 'R';
 
 /* Input */
 void keyCallback(int key, int action) {
@@ -41,7 +41,17 @@ void setMouse_xy(int x, int y) {
 }
 
 int getKey(int key) {
-    return glfwGetKey(key);
+    int isDown = 0;
+    if ((key >= DEVICE_MOUSE) && (key < DEVICE_CONTROLLER0)) {
+        key -= DEVICE_MOUSE;
+        isDown = glfwGetMouseButton(key);
+    } else if (key >= DEVICE_CONTROLLER0) {
+        key -= DEVICE_CONTROLLER0;
+        isDown = 0;
+    } else {
+        isDown = glfwGetKey(key);
+    }
+    return isDown;
 }
 
 /* Window creation and management */

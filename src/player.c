@@ -19,16 +19,16 @@ void Player_onTick(Player* p) {
 
     float forward = 0.0f, strafe = 0.0f;
 
-    if (glfwGetKey('R') == GLFW_PRESS) {
+    if (getKey('R')) {
         Entity_resetPosition(&p->e);
     }
 
-    if (glfwGetKey('W') == GLFW_PRESS || glfwGetKey(GLFW_KEY_UP)    == GLFW_PRESS) forward -= 1.0f;
-    if (glfwGetKey('S') == GLFW_PRESS || glfwGetKey(GLFW_KEY_DOWN)  == GLFW_PRESS) forward += 1.0f;
-    if (glfwGetKey('A') == GLFW_PRESS || glfwGetKey(GLFW_KEY_LEFT)  == GLFW_PRESS) strafe  -= 1.0f;
-    if (glfwGetKey('D') == GLFW_PRESS || glfwGetKey(GLFW_KEY_RIGHT) == GLFW_PRESS) strafe  += 1.0f;
+    if (getKey('W') || getKey(GLFW_KEY_UP)      ) forward -= 1.0f;
+    if (getKey('S') || getKey(GLFW_KEY_DOWN)    ) forward += 1.0f;
+    if (getKey('A') || getKey(GLFW_KEY_LEFT)    ) strafe  -= 1.0f;
+    if (getKey('D') || getKey(GLFW_KEY_RIGHT)   ) strafe  += 1.0f;
 
-    if (glfwGetKey(GLFW_KEY_SPACE) == GLFW_PRESS && p->e.onGround) {
+    if (getKey(GLFW_KEY_SPACE) && p->e.onGround) {
         p->e.motionY = 0.5f;
     }
 

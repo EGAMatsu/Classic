@@ -12,6 +12,11 @@
 
 extern bool isMouseLocked;
 
+extern int firePrim;
+extern int fireSec;
+extern int buttonSave;
+extern int buttonRespawn;
+
 void startModel_Matrix();
 void setTexture(int texture);
 void   endModel_Matrix();
