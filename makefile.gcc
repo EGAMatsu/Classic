@@ -19,7 +19,7 @@ SRC := \
     $(wildcard src/particle/*.c)    \
     $(wildcard src/gui/*.c)         \
     $(wildcard src/phys/*.c)        \
-    $(wildcard src/platform/glfw/*.c)        \
+    $(wildcard src/platform/glfw/*.c)
 # TODO: Make this automatic.
 
 OBJ := $(SRC:.c=.o)
@@ -53,7 +53,7 @@ endif
 ifeq ($(OS),Windows_NT)
     CC       = $(GCC_RT)/bin/gcc
     INCLUDE  = -Isrc -I. -Ithirdparty/glew-2.0.0/include -Ithirdparty/glfw-2.7.7/include -Ithirdparty/zlib123/include
-    CFLAGS   = $(CSTD) $(WARN) $(INCLUDE) -DGLEW_STATIC
+    CFLAGS   = $(CSTD) $(WARN) $(INCLUDE) -DGLEW_STATIC -DGLFW_GLEW
     EXTRA_LB = -Lthirdparty/glew-2.0.0/lib/Release/Win32 -Lthirdparty/glfw-2.7.7/lib-mingw -Lthirdparty/zlib123/lib
 
     EXE := minecraft.exe

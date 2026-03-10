@@ -1,7 +1,6 @@
 // character/polygon.c
 
 #include "polygon.h"
-#include <GL/glew.h>
 
 void Polygon_init_uv(Polygon* p, Vertex a, Vertex b, Vertex c, Vertex d,
                      int minU, int minV, int maxU, int maxV) {

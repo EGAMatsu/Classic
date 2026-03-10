@@ -28,15 +28,13 @@ void Chunk_init(Chunk* c, Level* level, int minX, int minY, int minZ, int maxX, 
     c->z = (minZ + maxZ) * 0.5;
 
     c->boundingBox = AABB_create(minX, minY, minZ, maxX, maxY, maxZ);
-    c->lists = glGenLists(2);
+    c->lists = model_genList(2);
 }
 
 void Chunk_rebuild(Chunk* c, int layer) {
     c->dirty = false;
 
-    glNewList(c->lists + layer, GL_COMPILE);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, c->texture);
+    startMeshList(c->lists + layer, c->texture);
     Tessellator_init(&TESSELLATOR);
 
     int tiles = 0;
@@ -57,8 +55,7 @@ void Chunk_rebuild(Chunk* c, int layer) {
     }
 
     Tessellator_flush(&TESSELLATOR);
-    glDisable(GL_TEXTURE_2D);
-    glEndList();
+    endMeshList();
 
     if (tiles > 0) {
         CHUNK_TotalTimeNS += (getCurrentTimeInNanoseconds() - nsStart);
@@ -67,7 +64,7 @@ void Chunk_rebuild(Chunk* c, int layer) {
 }
 
 void Chunk_render(Chunk* c, int layer) {
-    glCallList(c->lists + layer);
+    renderMeshList(c->lists + layer);
 }
 
 void Chunk_setDirty(Chunk* c) {

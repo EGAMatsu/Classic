@@ -1,5 +1,6 @@
 // textures.c - texture loader
 
+#include "../../dsp_renderer.h"
 #include "../../renderer/textures.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"

@@ -1,8 +1,10 @@
 // textures.c - texture loader
 
+#include "../../dsp_renderer.h"
 #include "../../renderer/textures.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
-const int filterMode = GL_NEAREST;
 int loadTexture(const char* path) {
     return 0;
 }

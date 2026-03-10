@@ -1,10 +1,6 @@
 // level/level_renderer.c — chunk grid, frustum culling, dirty-marking, and hit highlight
 
-#include <GL/glew.h>
-#include <GL/glu.h>
-#include <GL/glfw.h>
 #include <stdlib.h>
-
 #include "level_renderer.h"
 #include "level.h"
 #include "chunk.h"
@@ -115,68 +111,6 @@ int LevelRenderer_updateDirtyChunks(LevelRenderer* r, const Player* player) {
 
     free(list);
     return limit;
-}
-
-/*
-    - mode 0: additive pulsing, untextured full-cube outline (all 6 faces)
-    - mode 1: alpha-blended, textured preview block on the adjacent cell,
-              rendered in both layers (0 & 1)
-*/
-void LevelRenderer_renderHit(LevelRenderer* r, HitResult* h, int mode, int tileId) {
-    if (!h) return;
-
-    if (mode == 0) {
-        // --- Destroy highlight: additive, pulsing; draw all 6 faces untextured
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        float a = (float)(sin((double)currentTimeMillis() / 100.0) * 0.2 + 0.4) * 0.5f;
-        glColor4f(1.f, 1.f, 1.f, a);
-
-        Tessellator_init(&TESSELLATOR);
-        for (int face = 0; face < 6; ++face) {
-            Face_render(&TESSELLATOR, h->x, h->y, h->z, face);
-        }
-        Tessellator_flush(&TESSELLATOR);
-
-        glDisable(GL_BLEND);
-        return;
-    }
-
-    // --- Place preview: alpha blend, pulsing tint+alpha on adjacent cell
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    float br = (float)(sin((double)currentTimeMillis() / 100.0) * 0.2 + 0.8);
-    float al = (float)(sin((double)currentTimeMillis() / 200.0) * 0.2 + 0.5);
-    glColor4f(br, br, br, al);
-
-    int nx = 0, ny = 0, nz = 0;
-    switch (h->f) {
-        case 0: ny = -1; break; // bottom
-        case 1: ny =  1; break; // top
-        case 2: nz = -1; break; // -Z
-        case 3: nz =  1; break; // +Z
-        case 4: nx = -1; break; // -X
-        case 5: nx =  1; break; // +X
-    }
-    const int x = h->x + nx, y = h->y + ny, z = h->z + nz;
-
-    const Tile* t = (tileId >= 0 && tileId < 256) ? gTiles[tileId] : NULL;
-    if (t && t->render) {
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, r->terrainTex);
-
-        Tessellator_setIgnoreColor(&TESSELLATOR, 1); // Java: t.noColor()
-        Tessellator_init(&TESSELLATOR);
-        t->render(t, &TESSELLATOR, r->level, 0, x, y, z);
-        t->render(t, &TESSELLATOR, r->level, 1, x, y, z);
-        Tessellator_flush(&TESSELLATOR);
-        Tessellator_setIgnoreColor(&TESSELLATOR, 0);
-
-        glDisable(GL_TEXTURE_2D);
-    }
-
-    glDisable(GL_BLEND);
 }
 
 void LevelRenderer_setDirty(const LevelRenderer* r, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {

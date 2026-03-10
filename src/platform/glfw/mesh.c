@@ -7,6 +7,51 @@
 #include "../../character/cube.h"
 #include "../../common.h"
 
+/* Transparency (mostly for the block shit when placing/breaking) */
+void enableTranslucency(int mode) {
+    if (!mode) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    } else {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+}
+void disableTranslucency() {
+    glDisable(GL_BLEND);
+}
+void doCulling(bool doIt) {
+    if (doIt) {
+        glEnable(GL_CULL_FACE);
+    } else {
+        glDisable(GL_CULL_FACE);
+    }
+}
+bool doingCulling() {
+    return glIsEnabled(GL_CULL_FACE);
+}
+
+/* Lists */
+unsigned int model_genList(unsigned int n) {
+    return glGenLists(n);
+}
+void startMeshList(unsigned int layer, unsigned int texture) {
+    glNewList(layer, GL_COMPILE);
+    setTexture(texture);
+}
+void endMeshList() {
+    glDisable(GL_TEXTURE_2D);
+    glEndList();
+}
+void renderMeshList(unsigned int list) {
+    glCallList(list);
+}
+
+/* Mesh Array crap */
+void meshArray_disableColor() {
+    glDisableClientState(GL_COLOR_ARRAY);
+}
+
 /* Flushes all the queued quads for the World/UI */
 void Tessellator_flush(Tessellator* t) {
     // reset client states so stale arrays (e.g., colors) don't affect us
@@ -63,7 +108,11 @@ void startModel_Matrix() {
     glEnable(GL_TEXTURE_2D);
 }
 void setTexture(int texture) {
+    glEnable(GL_TEXTURE_2D);
     bind(texture);
+}
+void disableTexture() {
+    glDisable(GL_TEXTURE_2D);
 }
 void   endModel_Matrix() {
     glDisable(GL_TEXTURE_2D);
@@ -72,11 +121,10 @@ void   endModel_Matrix() {
 
 /* Model position */
 void setModel_color(float r, float g, float b, float a) {
-    if (a != -1) {
-        glColor4f(r,g,b,a);
-    } else {
-        glColor3f(r,g,b);
-    }
+    glColor4f(r, g, b, a);
+}
+void setModel_color_rgb(float r, float g, float b) {
+    glColor3f(r, g, b);
 }
 
 void setModel_position(double ix, double iy, double iz) {

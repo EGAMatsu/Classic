@@ -1,7 +1,7 @@
 // player.c — player base
 
 #include "player.h"
-#include <GL/glfw.h>
+#include "dsp_renderer.h"
 #include <math.h>
 
 void Player_init(Player* p, Level* level) {
@@ -19,16 +19,16 @@ void Player_onTick(Player* p) {
 
     float forward = 0.0f, strafe = 0.0f;
 
-    if (getKey('R')) {
+    if (getKey(buttonRespawn)) {
         Entity_resetPosition(&p->e);
     }
 
-    if (getKey('W') || getKey(GLFW_KEY_UP)      ) forward -= 1.0f;
-    if (getKey('S') || getKey(GLFW_KEY_DOWN)    ) forward += 1.0f;
-    if (getKey('A') || getKey(GLFW_KEY_LEFT)    ) strafe  -= 1.0f;
-    if (getKey('D') || getKey(GLFW_KEY_RIGHT)   ) strafe  += 1.0f;
+    if (getKey(    forwardButton[0]) || getKey(    forwardButton[1])    ) forward -= 1.0f;
+    if (getKey(   backwardButton[0]) || getKey(   backwardButton[1])    ) forward += 1.0f;
+    if (getKey( strafeLeftButton[0]) || getKey( strafeLeftButton[1])    ) strafe  -= 1.0f;
+    if (getKey(strafeRightButton[0]) || getKey(strafeRightButton[1])    ) strafe  += 1.0f;
 
-    if (getKey(GLFW_KEY_SPACE) && p->e.onGround) {
+    if (getKey(buttonJump) && p->e.onGround) {
         p->e.motionY = 0.5f;
     }
 

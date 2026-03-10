@@ -3,7 +3,6 @@
 #ifndef TEXTURES_H
 #define TEXTURES_H
 
-#include <GL/glew.h>
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -3,7 +3,6 @@
 #ifndef TESSELLATOR_H
 #define TESSELLATOR_H
 
-#include <GL/glew.h>
 #include <stdbool.h>
 
 #define MAX_VERTICES 100000

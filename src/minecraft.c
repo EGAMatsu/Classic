@@ -326,11 +326,11 @@ static void handleBlockClicks() {
         return;
     }
 
-    if (glfwGetWindowParam(GLFW_OPENED) && !glfwGetWindowParam(GLFW_ACTIVE) &&
+    if (isRunning() && !isActive() &&
         (left == 1 || right == 1)) {
-        int ww, wh; glfwGetWindowSize(&ww, &wh);
-        glfwDisable(GLFW_MOUSE_CURSOR);
-        glfwSetMousePos(ww / 2, wh / 2);
+        int ww, wh; getWindowSize(&ww, &wh);
+        hideMouse();
+        setMouse_xy(ww / 2, wh / 2);
         prevLeft = left;
         prevRight = right;
         return;

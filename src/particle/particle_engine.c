@@ -14,7 +14,7 @@ static void ensure_capacity(ParticleEngine* pe, int need) {
     pe->capacity = newcap;
 }
 
-void ParticleEngine_init(ParticleEngine* pe, Level* level, GLuint terrainTex) {
+void ParticleEngine_init(ParticleEngine* pe, Level* level, unsigned int terrainTex) {
     pe->level = level;
     pe->texture = terrainTex;
     pe->items = NULL;
@@ -42,12 +42,11 @@ void ParticleEngine_onTick(ParticleEngine* pe) {
 void ParticleEngine_render(ParticleEngine* pe, const Player* player, float partialTicks, int layer) {
     if (pe->count == 0) return;
 
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, pe->texture);
+    setTexture(pe->texture);
 
-    glDisableClientState(GL_COLOR_ARRAY);
-    GLboolean cullWasEnabled = glIsEnabled(GL_CULL_FACE);
-    if (cullWasEnabled) glDisable(GL_CULL_FACE);
+    meshArray_disableColor();
+    bool cullWasEnabled = doingCulling();
+    doCulling(!cullWasEnabled);
 
     // --- NEW camera vectors (match Java commit) ---
     float yawRad   = player->e.yRotation * (float)M_PI / 180.0f;
@@ -61,7 +60,7 @@ void ParticleEngine_render(ParticleEngine* pe, const Player* player, float parti
     float cameraZWithY =  cameraX * sinf(pitchRad);
     // ----------------------------------------------
 
-    glColor4f(0.8f, 0.8f, 0.8f, 1.0f);
+    //setModel_color(0.8f, 0.8f, 0.8f, 1.0f);
 
     Tessellator_init(&pe->tess);
     for (int i = 0; i < pe->count; ++i) {
@@ -76,6 +75,6 @@ void ParticleEngine_render(ParticleEngine* pe, const Player* player, float parti
     }
     Tessellator_flush(&pe->tess);
 
-    if (cullWasEnabled) glEnable(GL_CULL_FACE);
-    glDisable(GL_TEXTURE_2D);
+    doCulling(cullWasEnabled);
+    disableTexture();
 }

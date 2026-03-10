@@ -5,7 +5,6 @@
 
 #include "common.h"
 #include "entity.h"
-#include <GL/glfw.h>
 
 typedef struct Player {
     Entity e;

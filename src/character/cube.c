@@ -1,7 +1,6 @@
 // character/cube.c
 
 #include "cube.h"
-#include <GL/glew.h>
 #include <math.h>
 #include "common.h"
 

@@ -3,13 +3,11 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include <GL/glew.h>
-
 #include "../renderer/tessellator.h"
 
 typedef struct {
     int    charWidth[256];
-    GLuint texture;
+    unsigned int texture;
 } Font;
 
 void Font_init(Font* f, const char* path);                 // e.g. "resources/default.png"
