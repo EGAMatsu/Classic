@@ -12,8 +12,7 @@ static void frustum_normalizePlane(float f[6][4], int side) {
 }
 
 void frustum_calculate(void) {
-    glGetFloatv(GL_PROJECTION_MATRIX, frustum.proj);
-    glGetFloatv(GL_MODELVIEW_MATRIX,  frustum.modl);
+    getFrustumCone(frustum.proj, frustum.modl);
 
     float* p = frustum.proj;
     float* m = frustum.modl;

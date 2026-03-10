@@ -31,6 +31,7 @@ void setTexture(int texture);
 void disableTexture();
 void   endModel_Matrix();
 void meshArray_disableColor();
+void getFrustumCone(float proj[16], float modl[16]);
 
 /* List */
 unsigned int model_genList(unsigned int n);

@@ -25,6 +25,12 @@ int  strafeLeftButton[2] = {'A', GLFW_KEY_LEFT};
 int strafeRightButton[2] = {'D', GLFW_KEY_RIGHT};
 int buttonJump           = GLFW_KEY_SPACE;
 
+/* Frustum */
+void getFrustumCone(float proj[16], float modl[16]) {
+    glGetFloatv(GL_PROJECTION_MATRIX, proj);
+    glGetFloatv(GL_MODELVIEW_MATRIX,  modl);
+}
+
 /* Input */
 void keyCallback(int key, int action) {
     if (action == 1 && key == GLFW_KEY_ESC) {

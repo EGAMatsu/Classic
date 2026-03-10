@@ -16,6 +16,9 @@ int buttonJump = 112;
 
 static int wdth, hght;
 
+void getFrustumCone(float proj[16], float modl[16]) {
+}
+
 void keyCallback(int key, int action) {
     if (action == 1 && key == 27) {
         printf("Escape (might have been) pressed\n");
