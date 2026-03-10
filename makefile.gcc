@@ -10,17 +10,15 @@ BUILD ?= debug
 
 # Sources / Objects
 SRCDIR := src
-SRC    := $(SRCDIR)/minecraft.c $(SRCDIR)/player.c $(SRCDIR)/renderer/textures.c \
-          $(SRCDIR)/timer.c $(SRCDIR)/hitresult.c \
-          $(SRCDIR)/level/chunk.c $(SRCDIR)/level/level.c \
-          $(SRCDIR)/level/level_renderer.c $(SRCDIR)/renderer/tessellator.c \
-          $(SRCDIR)/level/tile/tile.c $(SRCDIR)/renderer/frustum.c \
-          $(SRCDIR)/phys/aabb.c $(SRCDIR)/entity.c \
-          $(SRCDIR)/character/zombie.c $(SRCDIR)/character/polygon.c \
-          $(SRCDIR)/character/cube.c $(SRCDIR)/level/perlin.c \
-          $(SRCDIR)/particle/particle_engine.c $(SRCDIR)/particle/particle.c \
-          $(SRCDIR)/character/zombie_model.c \
-          $(SRCDIR)/gui/font.c
+SRC := \
+    $(wildcard src/*.c)             \
+    $(wildcard src/renderer/*.c)    \
+    $(wildcard src/level/*.c)       \
+    $(wildcard src/level/tile/*.c)  \
+    $(wildcard src/character/*.c)   \
+    $(wildcard src/particle/*.c)    \
+    $(wildcard src/gui/*.c)         \
+    $(wildcard src/phys/*.c)
 # TODO: Make this automatic.
 
 OBJ := $(SRC:.c=.o)

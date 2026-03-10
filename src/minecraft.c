@@ -68,6 +68,8 @@ static HitResult hitResult;
 
 static void tick(Player* player);
 
+static bool isMouseLocked = true;
+
 /* --- input & GL state helpers ------------------------------------------------ */
 
 static void keyCallback(int key, int action) {
@@ -75,6 +77,7 @@ static void keyCallback(int key, int action) {
         if (glfwGetWindowParam(GLFW_OPENED)) {
             int ww, wh; glfwGetWindowSize(&ww, &wh);
             glfwEnable(GLFW_MOUSE_CURSOR);
+            isMouseLocked = 0;
             glfwSetMousePos(ww / 2, wh / 2);
         }
     }
@@ -406,9 +409,19 @@ static void handleGameplayKeys() {
     prevY = kY;
 }
 
+static bool wasGrabbed = false;
 static void handleBlockClicks() {
     int left  = glfwGetMouseButton(GLFW_MOUSE_BUTTON_LEFT);
     int right = glfwGetMouseButton(GLFW_MOUSE_BUTTON_RIGHT);
+
+    if (!isMouseLocked && (left || right)) {
+        isMouseLocked = 1;
+        return;
+    }
+    if (wasGrabbed != isMouseLocked) {
+        wasGrabbed = isMouseLocked;
+        return;
+    }
 
     if (glfwGetWindowParam(GLFW_OPENED) && !glfwGetWindowParam(GLFW_ACTIVE) &&
         (left == GLFW_PRESS || right == GLFW_PRESS)) {
@@ -475,8 +488,8 @@ static void render(Level* lvl, LevelRenderer* lr, Player* p, float t) {
         glfwEnable(GLFW_MOUSE_CURSOR);
     }
 
-    int grabbed = !glfwGetWindowParam(GLFW_MOUSE_CURSOR);
-    if (grabbed) {
+    int grabbed = glfwGetWindowParam(GLFW_ACTIVE);
+    if (grabbed && isMouseLocked) {
         int mx, my;
         glfwGetMousePos(&mx, &my);
 
