@@ -161,7 +161,7 @@ ArrayList_AABB Level_getCubes(const Level* level, const AABB* aabb) {
 }
 
 bool Level_load(Level* level) {
-    gzFile f = gzopen("level.dat", "rb");
+    gzFile f = gzopen("save/level.dat", "rb");
     if (!f) return false;
 
     size_t total = (size_t)level->width * level->height * level->depth;
@@ -181,7 +181,7 @@ bool Level_load(Level* level) {
 }
 
 void Level_save(const Level* level) {
-    gzFile f = gzopen("level.dat", "wb");
+    gzFile f = gzopen("save/level.dat", "wb");
     if (!f) return;
     gzwrite(f, level->blocks, (unsigned)(level->width * level->height * level->depth));
     gzclose(f);

@@ -63,7 +63,7 @@ void Perlin_read(int width, int height, int octave, int* out) {
     // Output in [0..255]
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
-            out[x + y * width] = table[(x % width) + (y % height) * width] / 512 + 128;
+            out[x + y * width] = table[(x % width) + (y % height) * width] / 512 + 256;
         }
     }
 
