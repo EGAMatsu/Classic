@@ -441,6 +441,7 @@ static void run(Level* lvl, LevelRenderer* lr, Player* p) {
         destroy(lvl);
         exit(EXIT_FAILURE);
     }
+    discord_start();
 
     int frames = 0;
     last = currentTimeMillis();
@@ -463,6 +464,8 @@ static void run(Level* lvl, LevelRenderer* lr, Player* p) {
 
         frames++;
         while (currentTimeMillis() >= last + 1000LL) {
+            char text[128];
+            char mobs[16];
             gFPS = frames;
             gChunkUpdatesPerSec = gChunkUpdatesAccum;
         #ifndef NDEBUG
@@ -471,9 +474,14 @@ static void run(Level* lvl, LevelRenderer* lr, Player* p) {
             last += 1000LL;
             frames = 0;
             gChunkUpdatesAccum = 0;
+
+            sprintf(text, "%d fps, %d chunk updates\0", gFPS, gChunkUpdatesPerSec);
+            sprintf(mobs, "%d", mobCount);
+            discord_update(text, mobs);
         }
     }
 
+    discord_end();
     destroy(lvl);
 }
 

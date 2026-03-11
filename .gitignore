@@ -61,6 +61,7 @@ minecraft
 *.exe
 *.dat
 save/*.dat
+./discord_game_sdk.dll
 
 # Resources folder for debug
 src/resources

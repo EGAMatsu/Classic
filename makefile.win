@@ -8,6 +8,8 @@ EXTRA_LB :=  -Lthirdparty/zlib123/lib
 
 ARCH_FLAGS := #-march=i586 -mtune=i586 -mno-sse -mno-sse2 -mno-mmx -fno-stack-protector
 
+DISCORD = TRUE
+
 # Build type: debug (default) or release
 BUILD ?= debug
 
@@ -32,7 +34,7 @@ DEP := $(OBJ:.o=.d)
 UNAME_S := $(shell uname -s)
 
 # Common flags
-CFLAGS   := $(ARCH_FLAGS) $(CSTD) $(WARN) $(INCLUDE) -DOpenGL -DWindows
+CFLAGS   := $(ARCH_FLAGS) $(CSTD) $(WARN) $(INCLUDE) -DOpenGL -DWindows -DDiscord
 DEPFLAGS := -MMD -MP
 
 # Per-build-type flags
@@ -47,12 +49,20 @@ EXE     := classW32.exe
 STATIC_FLAGS := -static -static-libgcc -static-libstdc++
 LDFLAGS := $(STATIC_FLAGS) $(EXTRA_LB) -lz -lopengl32 -lglu32 -lz -lgdi32 -lwinmm
 
+ifeq ($(DISCORD), TRUE)
+    CFLAGS  += -Ithirdparty/discord_game_sdk/c -DDiscord
+    LDFLAGS += thirdparty/discord_game_sdk/lib/x86/discord_game_sdk.dll
+endif
+
 # Default target
 .PHONY: all
 all: $(EXE)
 
 $(EXE): $(OBJ)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+ifeq ($(DISCORD), TRUE)
+	@cp thirdparty/discord_game_sdk/lib/x86/discord_game_sdk.dll ./
+endif
 
 # Compile C -> OBJ with depgen
 %.o: %.c
@@ -69,6 +79,9 @@ run: $(EXE)
 
 clean:
 	@rm -f $(EXE) $(OBJ) $(DEP) 2>/dev/null || true
+ifeq ($(DISCORD), TRUE)
+	@rm -f ./discord_game_sdk.dll
+endif
 
 # Include generated deps (if present)
 -include $(DEP)

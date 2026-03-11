@@ -112,14 +112,16 @@ void hideMouse() {
 }
 
 int getKey(int key) {
-    if (key >= DEVICE_MOUSE && key < DEVICE_CONTROLLER0) {
-        int mouseBtn = key - DEVICE_MOUSE;
-        int vk = (mouseBtn == 1) ? VK_LBUTTON : VK_RBUTTON;
-        return (GetAsyncKeyState(vk) & 0x8000) != 0;
-    } else if (key >= DEVICE_CONTROLLER0) {
-        return 0;
-    } else {
-        return (GetAsyncKeyState(key) & 0x8000) != 0;
+    if (g_windowActive) {
+        if (key >= DEVICE_MOUSE && key < DEVICE_CONTROLLER0) {
+            int mouseBtn = key - DEVICE_MOUSE;
+            int vk = (mouseBtn == 1) ? VK_LBUTTON : VK_RBUTTON;
+            return (GetAsyncKeyState(vk) & 0x8000) != 0;
+        } else if (key >= DEVICE_CONTROLLER0) {
+            return 0;
+        } else {
+            return (GetAsyncKeyState(key) & 0x8000) != 0;
+        }
     }
 }
 
