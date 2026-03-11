@@ -125,9 +125,7 @@ static void setupCamera(Player* p, float t) {
     moveCameraToPlayer(p, t);
 }
 
-static void drawGui(float partialTicks) {
-    (void)partialTicks;
-
+static void drawCrosshair() {
     int fbw, fbh;
     getWindowSize(&fbw, &fbh);
     const int baseH = 240;
@@ -135,8 +133,60 @@ static void drawGui(float partialTicks) {
     int scale = fbh / baseH;
     if (scale < 1) scale = 1;
 
+    int screenHeight = fbh;
+    int screenWidth  = fbw;
+
+    setupGUI(screenWidth, screenHeight);
+    setModel_positionOffset(0.0f, 0.0f, -200.0f);
+
+    /* Bodgy fix for the crosshair */
+    int cx = screenWidth / 2;
+    int sc = (scale-2);
+    if (sc < 0) {
+        sc = 0;
+    }
+    int cy = (screenHeight / 2) + (16*sc);
+
+    setModel_color(1, 1, 1, 1);
+    Tessellator_init(&hudTess);
+
+    int _1 = 1 * scale;
+    int _4 = 4 * scale;
+    int _5 = 5 * scale;
+    Tessellator_vertex(&hudTess, (float)(cx + _1), (float)(cy - _4), 0.0f);
+    Tessellator_vertex(&hudTess, (float)(cx +  0), (float)(cy - _4), 0.0f);
+    Tessellator_vertex(&hudTess, (float)(cx +  0), (float)(cy + _5), 0.0f);
+    Tessellator_vertex(&hudTess, (float)(cx + _1), (float)(cy + _5), 0.0f);
+
+    Tessellator_vertex(&hudTess, (float)(cx + _5), (float)(cy +  0), 0.0f);
+    Tessellator_vertex(&hudTess, (float)(cx - _4), (float)(cy +  0), 0.0f);
+    Tessellator_vertex(&hudTess, (float)(cx - _4), (float)(cy + _1), 0.0f);
+    Tessellator_vertex(&hudTess, (float)(cx + _5), (float)(cy + _1), 0.0f);
+
+    Tessellator_flush(&hudTess);
+}
+
+static void drawGui(float partialTicks) {
+    (void)partialTicks;
+
+    int fbw, fbh;
+    getWindowSize(&fbw, &fbh);
+
+    const int baseH = 240;
+
+    int scale = fbh / baseH;
+    if (scale < 1) scale = 1;
+
     int screenHeight = baseH;
-    int screenWidth  = fbw / scale;          
+    int screenWidth  = fbw / scale;
+
+    int scaledW = screenWidth * scale;
+    int scaledH = screenHeight * scale;
+
+    int offsetX = 0;
+    int offsetY = fbh - scaledH;
+
+    glViewport(offsetX, offsetY, scaledW, scaledH);
 
     setupGUI(screenWidth, screenHeight);
     setModel_positionOffset(0.0f, 0.0f, -200.0f);
@@ -166,22 +216,9 @@ static void drawGui(float partialTicks) {
     snprintf(stats, sizeof stats, "%d fps, %d chunk updates", gFPS, gChunkUpdatesPerSec);
     Font_drawShadow(&gFont, &hudTess, stats, 2, 12, 0xFFFFFF);
 
-    int cx = screenWidth / 2;
-    int cy = screenHeight / 2;
-
-    setModel_color(1, 1, 1, 1);
-    Tessellator_init(&hudTess);
-    Tessellator_vertex(&hudTess, (float)(cx + 1), (float)(cy - 4), 0.0f);
-    Tessellator_vertex(&hudTess, (float)(cx + 0), (float)(cy - 4), 0.0f);
-    Tessellator_vertex(&hudTess, (float)(cx + 0), (float)(cy + 5), 0.0f);
-    Tessellator_vertex(&hudTess, (float)(cx + 1), (float)(cy + 5), 0.0f);
-    
-    Tessellator_vertex(&hudTess, (float)(cx + 5), (float)(cy + 0), 0.0f);
-    Tessellator_vertex(&hudTess, (float)(cx - 4), (float)(cy + 0), 0.0f);
-    Tessellator_vertex(&hudTess, (float)(cx - 4), (float)(cy + 1), 0.0f);
-    Tessellator_vertex(&hudTess, (float)(cx + 5), (float)(cy + 1), 0.0f);
-    Tessellator_flush(&hudTess);
+    drawCrosshair();
 }
+
 
 /* --- picking ----------------------------------------------------------------- */
 
