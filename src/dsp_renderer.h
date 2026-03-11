@@ -39,16 +39,6 @@ extern float dt;
     void discord_start();
     void discord_update(char *text, char *textSmall);
     void discord_end();
-#else
-    inline void discord_start() {
-        printf("Discord WOULD start here.\n");
-    }
-    inline void discord_update(char *text, char *textSmall) {
-        printf("Discord WOULD update here.\n");
-    }
-    inline void discord_end() {
-        printf("Discord WOULD end here.\n");
-    }
 #endif
 
 extern bool isMouseLocked;

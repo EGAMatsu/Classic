@@ -67,4 +67,14 @@ void discord_end() {
         g_activity_manager = NULL;
     }
 }
+#else
+void discord_start() {
+    printf("Discord WOULD start here.\n");
+}
+void discord_update(char *text, char *textSmall) {
+    /*printf("Discord WOULD update here.\n");*/ // A bit annoying.
+}
+void discord_end() {
+    printf("Discord WOULD end here.\n");
+}
 #endif
