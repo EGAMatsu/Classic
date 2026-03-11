@@ -76,8 +76,8 @@ static int init(Level *lvl, LevelRenderer *lr, Player *p) {
     /* Game initialization */
     Tile_registerAll();
 
-    texTerrain = loadTexture("resources/terrain.png");
-    Font_init(&gFont, "resources/default.gif");
+    texTerrain = loadTexture("resources/texture/terrain.png");
+    Font_init(&gFont, "resources/texture/font/default.gif");
 
     Level_init(lvl, 256, 256, 64);
     LevelRenderer_init(lr, lvl, (unsigned int)texTerrain);

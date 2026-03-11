@@ -16,7 +16,7 @@ static int       CHUNK_TotalUpdates = 0;
 
 void Chunk_init(Chunk* c, Level* level, int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
     c->level   = level;
-    c->texture = loadTexture("resources/terrain.png");
+    c->texture = loadTexture("resources/texture/terrain.png");
 
     c->minX = minX; c->minY = minY; c->minZ = minZ;
     c->maxX = maxX; c->maxY = maxY; c->maxZ = maxZ;
