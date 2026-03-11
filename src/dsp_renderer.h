@@ -7,6 +7,9 @@
 #include "hitresult.h"
 
 #include <stdbool.h>
+extern float dt;
+
+#define humanBobMulti 1
 #ifdef GLFW_GLEW
     #include <GL/glew.h>
     #include <GL/glu.h>
@@ -18,6 +21,17 @@
     #define WIN32_LEAN_AND_MEAN
     #include <d3d9.h>
     #include <d3dx9.h>
+#elif OpenGL
+    #ifdef Windows
+        #define Polygon WinPolygon
+        #include <windows.h>
+        #undef Polygon
+        #define WIN32_LEAN_AND_MEAN
+        #undef humanBobMulti
+        #define humanBobMulti -1 /* Inverted on windows for some reason, will look into later. */
+    #endif
+    #include <GL/glu.h>
+    #include <GL/gl.h>
 #endif
 
 extern bool isMouseLocked;

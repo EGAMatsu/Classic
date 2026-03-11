@@ -67,7 +67,7 @@ void Zombie_render(const Zombie* z, float partialTicks) {
     const float size = 7.0f / 120.0f;
     setModel_scale(size);
 
-    const double offY = fabs(sin(-t * 2.0 / 3.0)) * 5.0 + 23.0;
+    const double offY = fabs(sin((t*humanBobMulti) * 2.0 / 3.0)) * 5.0 + 23.0;
     setModel_positionOffset(0.0, -offY, 0.0);
     /*glRotated(z->rotation * 180.0 / M_PI + 180.0, 0, 1, 0);*/
     setModel_rotation(0, z->rotation * 180.0 / M_PI + 180.0, 0);

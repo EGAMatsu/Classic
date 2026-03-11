@@ -1,0 +1,74 @@
+# Toolchain
+GCC_RT  := thirdparty/gcc_for_win98
+CC       = $(GCC_RT)/bin/gcc
+CSTD    := -std=c99
+WARN    := -Wall -Wextra
+INCLUDE := -Isrc -I. -Ithirdparty/zlib123/include
+EXTRA_LB :=  -Lthirdparty/zlib123/lib
+
+ARCH_FLAGS := #-march=i586 -mtune=i586 -mno-sse -mno-sse2 -mno-mmx -fno-stack-protector
+
+# Build type: debug (default) or release
+BUILD ?= debug
+
+# Sources / Objects
+SRCDIR := src
+SRC := \
+    $(wildcard src/*.c)             \
+    $(wildcard src/renderer/*.c)    \
+    $(wildcard src/level/*.c)       \
+    $(wildcard src/level/tile/*.c)  \
+    $(wildcard src/character/*.c)   \
+    $(wildcard src/particle/*.c)    \
+    $(wildcard src/gui/*.c)         \
+    $(wildcard src/phys/*.c)        \
+    $(wildcard src/platform/win32/*.c)
+# TODO: Make this automatic.
+
+OBJ := $(SRC:.c=.o)
+DEP := $(OBJ:.o=.d)
+
+# Platform detect
+UNAME_S := $(shell uname -s)
+
+# Common flags
+CFLAGS   := $(ARCH_FLAGS) $(CSTD) $(WARN) $(INCLUDE) -DOpenGL -DWindows
+DEPFLAGS := -MMD -MP
+
+# Per-build-type flags
+ifeq ($(BUILD),release)
+    CFLAGS  += -O2 -DNDEBUG
+else
+    CFLAGS  += -O0 -g
+endif
+
+# generics
+EXE     := classW32.exe
+STATIC_FLAGS := -static -static-libgcc -static-libstdc++
+LDFLAGS := $(STATIC_FLAGS) $(EXTRA_LB) -lz -lopengl32 -lglu32 -lz -lgdi32 -lwinmm
+
+# Default target
+.PHONY: all
+all: $(EXE)
+
+$(EXE): $(OBJ)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+
+# Compile C -> OBJ with depgen
+%.o: %.c
+	$(CC) $(CFLAGS) $(DEPFLAGS) -c $< -o $@
+
+# Convenience targets
+.PHONY: debug release run clean
+debug:
+	$(MAKE) BUILD=debug
+release:
+	$(MAKE) BUILD=release
+run: $(EXE)
+	./$(EXE)
+
+clean:
+	@rm -f $(EXE) $(OBJ) $(DEP) 2>/dev/null || true
+
+# Include generated deps (if present)
+-include $(DEP)

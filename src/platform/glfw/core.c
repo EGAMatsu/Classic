@@ -1,5 +1,5 @@
-/* The main class for the renderer, window handling, input, etc... */
-/* Seperate from the meshRenderer, as this is more general bullcrap than that is. */
+#include <GL/glew.h>
+#include <GL/glfw.h>
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
@@ -21,9 +21,13 @@ int buttonRespawn = 'R';
 
 int     forwardButton[2] = {'W', GLFW_KEY_UP};
 int    backwardButton[2] = {'S', GLFW_KEY_DOWN};
-int  strafeLeftButton[2] = {'A', GLFW_KEY_LEFT};
+int   strafeLeftButton[2] = {'A', GLFW_KEY_LEFT};
 int strafeRightButton[2] = {'D', GLFW_KEY_RIGHT};
 int buttonJump           = GLFW_KEY_SPACE;
+
+static bool g_mouseLocked = false;
+static int g_mouseX = 0, g_mouseY = 0;
+static int g_mouseDeltaX = 0, g_mouseDeltaY = 0;
 
 /* Frustum */
 void getFrustumCone(float proj[16], float modl[16]) {
@@ -33,28 +37,39 @@ void getFrustumCone(float proj[16], float modl[16]) {
 
 /* Input */
 void keyCallback(int key, int action) {
-    if (action == 1 && key == GLFW_KEY_ESC) {
-        if (glfwGetWindowParam(GLFW_OPENED)) {
-            int ww, wh; glfwGetWindowSize(&ww, &wh);
-            glfwEnable(GLFW_MOUSE_CURSOR);
-            isMouseLocked = 0;
-            glfwSetMousePos(ww / 2, wh / 2);
-        }
+    if (action == GLFW_PRESS && key == GLFW_KEY_ESC) {
+        g_mouseLocked = false;
+        glfwEnable(GLFW_MOUSE_CURSOR);
     }
 }
 
 void getMouse_xy(int *x, int *y) {
-    glfwGetMousePos(x, y);
+    if (g_mouseLocked) {
+        *x = g_mouseDeltaX;
+        *y = g_mouseDeltaY;
+        g_mouseDeltaX = 0;
+        g_mouseDeltaY = 0;
+    } else {
+        glfwGetMousePos(x, y);
+    }
 }
+
 void setMouse_xy(int x, int y) {
     glfwSetMousePos(x, y);
 }
 
 void showMouse() {
+    g_mouseLocked = false;
     glfwEnable(GLFW_MOUSE_CURSOR);
 }
+
 void hideMouse() {
+    g_mouseLocked = true;
     glfwDisable(GLFW_MOUSE_CURSOR);
+    
+    int ww, wh;
+    glfwGetWindowSize(&ww, &wh);
+    glfwSetMousePos(ww / 2, wh / 2);
 }
 
 int getKey(int key) {
@@ -126,10 +141,7 @@ int initGraphics() {
     glEnable(GL_ALPHA_TEST);
     glAlphaFunc(GL_GREATER, 0.5f);
     
-    int ww, wh;
-    glfwGetWindowSize(&ww, &wh);
-    glfwDisable(GLFW_MOUSE_CURSOR);
-    glfwSetMousePos(ww / 2, wh / 2);
+    hideMouse();
     glfwSetKeyCallback(keyCallback);
 
     return 1;
@@ -142,13 +154,32 @@ void shutdownWindow() {
 bool isRunning() {
     return glfwGetWindowParam(GLFW_OPENED);
 }
+
 bool isActive() {
-    return glfwGetWindowParam(GLFW_ACTIVE);
+    return glfwGetWindowParam(GLFW_ACTIVE) && g_mouseLocked;
 }
 
 void startOfTick() {
     glfwPollEvents();
+
+    if (g_mouseLocked && glfwGetWindowParam(GLFW_ACTIVE)) {
+        int mx, my;
+        glfwGetMousePos(&mx, &my);
+
+        int ww, wh;
+        glfwGetWindowSize(&ww, &wh);
+        int cx = ww / 2;
+        int cy = wh / 2;
+
+        g_mouseDeltaX = mx;
+        g_mouseDeltaY = my;
+
+        if (mx != cx || my != cy) {
+            glfwSetMousePos(cx, cy);
+        }
+    }
 }
+
 void startOfFrame(int *width, int *height) {
     glfwSwapBuffers();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -156,10 +187,11 @@ void startOfFrame(int *width, int *height) {
     getWindowSize(width, height); 
     glViewport(0, 0, width[0], height[0]);
 
-    if (!glfwGetWindowParam(GLFW_ACTIVE)) {
-        glfwEnable(GLFW_MOUSE_CURSOR);
+    if (!glfwGetWindowParam(GLFW_ACTIVE) && g_mouseLocked) {
+        showMouse();
     }
 }
+
 void endOfFrame(LevelRenderer *lr, HitResult *hitResult, int isHitNull, int gEditMode, int selectedTileId) {
     glDisable(GL_LIGHTING);
     glDisable(GL_TEXTURE_2D);
@@ -231,8 +263,8 @@ void LevelRenderer_renderHit(LevelRenderer* r, HitResult* h, int mode, int tileI
         // --- Destroy highlight: additive, pulsing; draw all 6 faces untextured
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        float a = (float)(sin((double)currentTimeMillis() / 100.0) * 0.2 + 0.4) * 0.5f;
-        glColor4f(1.f, 1.f, 1.f, a);
+        float a = (float)(sin((double)glfwGetTime() * 10.0) * 0.2 + 0.4) * 0.5f;
+        glColor4f(1.0f, 1.0f, 1.0f, a);
 
         Tessellator_init(&TESSELLATOR);
         for (int face = 0; face < 6; ++face) {
@@ -248,8 +280,8 @@ void LevelRenderer_renderHit(LevelRenderer* r, HitResult* h, int mode, int tileI
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    float br = (float)(sin((double)currentTimeMillis() / 100.0) * 0.2 + 0.8);
-    float al = (float)(sin((double)currentTimeMillis() / 200.0) * 0.2 + 0.5);
+    float br = (float)(sin((double)glfwGetTime() * 10.0) * 0.2 + 0.8);
+    float al = (float)(sin((double)glfwGetTime() * 5.0) * 0.2 + 0.5);
     glColor4f(br, br, br, al);
 
     int nx = 0, ny = 0, nz = 0;

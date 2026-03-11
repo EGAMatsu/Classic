@@ -58,6 +58,7 @@ nul
 # Output files
 rubydung
 minecraft
+*.exe
 *.dat
 save/*.dat
 

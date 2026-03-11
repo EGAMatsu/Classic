@@ -379,7 +379,6 @@ static void handleBlockClicks() {
 }
 
 /* --- frame ------------------------------------------------------------------- */
-
 static void render(Level* lvl, LevelRenderer* lr, Player* p, float t) {
     (void)lvl;
     int fbw, fbh;
@@ -390,16 +389,17 @@ static void render(Level* lvl, LevelRenderer* lr, Player* p, float t) {
         int mx, my;
         getMouse_xy(&mx, &my);
 
-        int ww, wh; getWindowSize(&ww, &wh);
+        int ww, wh; 
+        getWindowSize(&ww, &wh);
         int cx = ww / 2, cy = wh / 2;
 
-        float dx = (float)(mx - cx);
-        float dy = (float)(my - cy);
+        float dx = (float)(mx - cx) * t;
+        float dy = (float)(my - cy) * t;
 
         dy = -dy * (float)gYMouseAxis;
 
         Player_turn(p, dx, dy);
-        setMouse_xy(cx, cy);
+        //setMouse_xy(cx, cy);
     }
 
     setupCamera(p, t);
@@ -433,7 +433,8 @@ static void render(Level* lvl, LevelRenderer* lr, Player* p, float t) {
 }
 
 /* --- main loop --------------------------------------------------------------- */
-
+float dt;
+long long last;
 static void run(Level* lvl, LevelRenderer* lr, Player* p) {
     if (!init(lvl, lr, p)) {
         fprintf(stderr, "Failed to initialize game\n");
@@ -442,12 +443,13 @@ static void run(Level* lvl, LevelRenderer* lr, Player* p) {
     }
 
     int frames = 0;
-    long long last = currentTimeMillis();
+    last = currentTimeMillis();
 
     while (isRunning()) {
         startOfTick();
 
         Timer_advanceTime(&timer);
+
         for (int i = 0; i < timer.ticks; ++i) tick(p);
 
         pick(timer.partialTicks);

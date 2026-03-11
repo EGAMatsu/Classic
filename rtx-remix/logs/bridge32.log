@@ -1,0 +1,19 @@
+[00:26:50.800] info:  [00:26:50.799] info:  No default config found for: J:\__CLASSIC_MC\Classic\classW32.exe
+[00:26:50.800] info:  [00:26:50.799] info:  Trying to open config file: J:\__CLASSIC_MC\Classic\.trex\bridge.conf
+[00:26:50.802] info:  ==================
+[00:26:50.802] info:  NVIDIA RTX Remix Bridge Client
+[00:26:50.802] info:  ==================
+[00:26:50.805] info:  Version: remix-main+eb34ad80
+[00:26:50.806] info:  Loaded d3d9.dll from J
+[00:26:50.815] info:  DirectInput8 hook attached.
+[00:26:50.821] info:  DirectInput hook attached.
+[00:26:50.822] info:  Initializing new shared memory object.
+[00:26:50.824] info:  Initializing new shared memory object.
+[00:26:50.827] info:  Initializing new shared memory object.
+[00:26:50.862] info:  Initializing new shared memory object.
+[00:26:50.880] info:  Launching server with GUID 240eae92-05de-4417-bbd0-4714fe66274c
+[00:26:50.881] err:   RegisterExitCallback() failed with error code 87
+[00:26:50.882] info:  Process set as DPI aware
+[00:26:50.883] info:  Sending SYN command, waiting for ACK from server...
+[00:26:54.008] info:  About to unload bridge client.
+[00:26:54.009] info:  Sending Terminate command to server...

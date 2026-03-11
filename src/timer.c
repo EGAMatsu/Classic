@@ -14,10 +14,6 @@
   #include <time.h>
 #endif
 
-#define NS_PER_SECOND        1000000000LL
-#define MAX_NS_PER_UPDATE    1000000000LL
-#define MAX_TICKS_PER_UPDATE 100
-
 void Timer_init(Timer* timer, float ticksPerSecond) {
     timer->ticksPerSecond = ticksPerSecond;
     timer->timeScale      = 1.0f;

@@ -54,7 +54,6 @@ void meshArray_disableColor() {
 
 /* Flushes all the queued quads for the World/UI */
 void Tessellator_flush(Tessellator* t) {
-    // reset client states so stale arrays (e.g., colors) don't affect us
     glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -76,28 +75,28 @@ void Tessellator_flush(Tessellator* t) {
 
 /* Polygon rendering for chars */
 void Polygon_render(const Polygon* p) {
-    glColor3f(1.f, 1.f, 1.f);
+    glColor3f(1.0f, 1.0f, 1.0f);
 
     const float uDiv = 63.999f;
     const float vDiv = 31.999f;
 
+    glBegin(GL_QUADS);
     glTexCoord2f(p->v[3].u / uDiv, p->v[3].v / vDiv); glVertex3f(p->v[3].pos.x, p->v[3].pos.y, p->v[3].pos.z);
     glTexCoord2f(p->v[2].u / uDiv, p->v[2].v / vDiv); glVertex3f(p->v[2].pos.x, p->v[2].pos.y, p->v[2].pos.z);
     glTexCoord2f(p->v[1].u / uDiv, p->v[1].v / vDiv); glVertex3f(p->v[1].pos.x, p->v[1].pos.y, p->v[1].pos.z);
     glTexCoord2f(p->v[0].u / uDiv, p->v[0].v / vDiv); glVertex3f(p->v[0].pos.x, p->v[0].pos.y, p->v[0].pos.z);
+    glEnd();
 }
 
 /* Box rendering (also for chars) */
 void Cube_render(const Cube* c) {
     glPushMatrix();
     glTranslatef(c->x, c->y, c->z);
-    glRotated(c->zRot * 180.0 / M_PI, 0, 0, 1);
-    glRotated(c->yRot * 180.0 / M_PI, 0, 1, 0);
-    glRotated(c->xRot * 180.0 / M_PI, 1, 0, 0);
+    glRotatef((float)(c->zRot * 180.0 / M_PI), 0.0f, 0.0f, 1.0f);
+    glRotatef((float)(c->yRot * 180.0 / M_PI), 0.0f, 1.0f, 0.0f);
+    glRotatef((float)(c->xRot * 180.0 / M_PI), 1.0f, 0.0f, 0.0f);
 
-    glBegin(GL_QUADS);
     for (int i = 0; i < 6; ++i) Polygon_render(&c->polys[i]);
-    glEnd();
 
     glPopMatrix();
 }
@@ -129,7 +128,7 @@ void setModel_color_rgb(float r, float g, float b) {
 
 void setModel_position(double ix, double iy, double iz) {
     glTranslated(ix, iy, iz);
-    glScalef(1.f, -1.f, 1.f);
+    glScalef(1.0f, -1.0f, 1.0f);
 }
 
 void setModel_positionOffset(double ix, double iy, double iz) {
@@ -147,7 +146,7 @@ void setModel_scalePercise(float sx, float sy, float sz) {
 
 /* Model Rotation */
 void setModel_rotation(float rx, float ry, float rz) {
-    glRotatef(rz, 0, 0, 1);
-    glRotatef(ry, 0, 1, 0);
-    glRotatef(rx, 1, 0, 0);
+    glRotatef(rz, 0.0f, 0.0f, 1.0f);
+    glRotatef(ry, 0.0f, 1.0f, 0.0f);
+    glRotatef(rx, 1.0f, 0.0f, 0.0f);
 }

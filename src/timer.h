@@ -3,6 +3,10 @@
 #ifndef TIMER_H
 #define TIMER_H
 
+#define NS_PER_SECOND        1000000000LL
+#define MAX_NS_PER_UPDATE    1000000000LL
+#define MAX_TICKS_PER_UPDATE 100
+
 typedef struct {
     float      ticksPerSecond;
     long long  lastTime;
