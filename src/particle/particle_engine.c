@@ -5,6 +5,7 @@
 #include <math.h>
 #include "../renderer/textures.h"
 #include "../player.h"
+#include "../dsp_renderer.h"
 
 static void ensure_capacity(ParticleEngine* pe, int need) {
     if (pe->capacity >= need) return;

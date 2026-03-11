@@ -1,8 +1,8 @@
 // level/frustum.c — extract frustum planes from GL matrices & AABB test
 
 #include "frustum.h"
+#include "../dsp_renderer.h"
 #include <math.h>
-#include <GL/glew.h>
 
 Frustum frustum;
 

@@ -7,6 +7,6 @@
 #include <stdlib.h>
 
 int  loadTexture(const char* path);
-void bind(int id);
+void texture_bind(int id);
 
 #endif  // TEXTURES_H

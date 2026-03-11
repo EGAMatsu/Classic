@@ -11,7 +11,7 @@ int loadTexture(const char* path) {
     glGenTextures(1, &tex);
     if (!tex) { fprintf(stderr, "Failed to generate texture id\n"); return 0; }
 
-    bind((int)tex);
+    texture_bind((int)tex);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -34,6 +34,6 @@ int loadTexture(const char* path) {
     return (int)tex;
 }
 
-void bind(int id) {
+void texture_bind(int id) {
     glBindTexture(GL_TEXTURE_2D, (GLuint)id);
 }

@@ -109,7 +109,7 @@ void startModel_Matrix() {
 }
 void setTexture(int texture) {
     glEnable(GL_TEXTURE_2D);
-    bind(texture);
+    texture_bind(texture);
 }
 void disableTexture() {
     glDisable(GL_TEXTURE_2D);

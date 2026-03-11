@@ -5,6 +5,7 @@
 #include "../renderer/textures.h"
 #include "../timer.h"
 #include "../player.h"
+#include "../dsp_renderer.h"
 #include <math.h>
 
 extern Tessellator TESSELLATOR;

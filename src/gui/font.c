@@ -5,6 +5,7 @@
 #include "../renderer/textures.h"
 #include <string.h>
 #include <stdlib.h>
+#include "../dsp_renderer.h"
 
 #include "stb_image.h"
 

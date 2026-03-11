@@ -11,6 +11,13 @@
     #include <GL/glew.h>
     #include <GL/glu.h>
     #include <GL/glfw.h>
+#elif DIRECTX9
+    #define Polygon WinPolygon
+    #include <windows.h>
+    #undef Polygon
+    #define WIN32_LEAN_AND_MEAN
+    #include <d3d9.h>
+    #include <d3dx9.h>
 #endif
 
 extern bool isMouseLocked;

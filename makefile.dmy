@@ -1,5 +1,4 @@
 # Toolchain
-GCC_RT  := thirdparty/gcc_for_win98
 CC      := gcc
 CSTD    := -std=c99
 WARN    := -Wall -Wextra
@@ -29,7 +28,7 @@ DEP := $(OBJ:.o=.d)
 UNAME_S := $(shell uname -s)
 
 # Common flags
-CFLAGS   := $(CSTD) $(WARN) $(INCLUDE) -DGLEW_STATIC -DGLFW_GLEW
+CFLAGS   := $(CSTD) $(WARN) $(INCLUDE)
 DEPFLAGS := -MMD -MP
 
 # Per-build-type flags
@@ -39,31 +38,10 @@ else
     CFLAGS  += -O0 -g
 endif
 
-# Linker flags / output name per-OS
-ifeq ($(UNAME_S),Linux)
-    EXE     := minecraft
-    LDFLAGS := -Wl,-Bstatic -lglfw3 -lGLEW -lGLU -lz -Wl,-Bdynamic -lGL -lm -lpthread -ldl -lX11
-endif
-
-ifeq ($(UNAME_S),Darwin)
-    EXE     := minecraft
-    LDFLAGS := -lglfw -lGLEW -framework OpenGL -lz
-endif
-
-ifeq ($(OS),Windows_NT)
-    CC       = $(GCC_RT)/bin/gcc
-    INCLUDE  = -Isrc -I. -Ithirdparty/glew-2.0.0/include -Ithirdparty/glfw-2.7.7/include -Ithirdparty/zlib123/include
-    CFLAGS   = $(CSTD) $(WARN) $(INCLUDE) -DGLEW_STATIC -DGLFW_GLEW
-    EXTRA_LB = -Lthirdparty/glew-2.0.0/lib/Release/Win32 -Lthirdparty/glfw-2.7.7/lib-mingw -Lthirdparty/zlib123/lib
-
-    EXE := minecraft.exe
-    STATIC_FLAGS := -static -static-libgcc -static-libstdc++
-    ifeq ($(BUILD),release)
-        LDFLAGS := $(STATIC_FLAGS) $(EXTRA_LB) -lz -lgdi32 -lwinmm -mwindows
-    else
-        LDFLAGS := $(STATIC_FLAGS) $(EXTRA_LB) -lz -lgdi32 -lwinmm
-    endif
-endif
+# generics
+EXE     := clasDumb.exe
+STATIC_FLAGS := -static -static-libgcc -static-libstdc++
+LDFLAGS := $(STATIC_FLAGS) $(EXTRA_LB) -lz
 
 # Default target
 .PHONY: all
